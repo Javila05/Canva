@@ -29,7 +29,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     thicknessInput.addEventListener('input', function () {
+
+        console.log(ctx.lineWidth)
         ctx.lineWidth = thicknessInput.value;
+        redraw();
     });
 
     rotateClockwiseButton.addEventListener('click', function () {
@@ -81,6 +84,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     function redraw() {
+
+        console.log('start redraw');
         lines.forEach(function (line) {
             if (line.length < 2) return;
 
@@ -94,6 +99,8 @@ document.addEventListener('DOMContentLoaded', function () {
             ctx.stroke();
             ctx.closePath();
         });
+
+        console.log('stop redraw');
     }
 
     function getMousePos(canvas, event) {
