@@ -26,12 +26,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     colorInput.addEventListener('input', function () {
         ctx.strokeStyle = colorInput.value;
+        redraw();
     });
 
     thicknessInput.addEventListener('input', function () {
 
-        console.log(ctx.lineWidth)
+   
         ctx.lineWidth = thicknessInput.value;
+        console.log(ctx.lineWidth);
         redraw();
     });
 
