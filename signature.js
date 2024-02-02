@@ -93,6 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             ctx.beginPath();
             ctx.moveTo(line[0].x, line[0].y);
+            console.log('Passed If');
 
             for (var i = 1; i < line.length; i++) {
                 ctx.lineTo(line[i].x, line[i].y);
