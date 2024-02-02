@@ -26,14 +26,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     colorInput.addEventListener('input', function () {
         ctx.strokeStyle = colorInput.value;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         redraw();
     });
 
     thicknessInput.addEventListener('input', function () {
-
-   
         ctx.lineWidth = thicknessInput.value;
         console.log(ctx.lineWidth);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
         redraw();
     });
 
@@ -44,9 +45,6 @@ document.addEventListener('DOMContentLoaded', function () {
     rotateCounterclockwiseButton.addEventListener('click', function () {
         rotateCanvas(canvas, ctx, -90);
     });
-
-   
-
 
     function startDrawing(e) {
         drawing = true;
@@ -82,11 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
         ctx.closePath();
     }
 
-
-
-
     function redraw() {
-
         console.log('start redraw');
         lines.forEach(function (line) {
             if (line.length < 2) return;
