@@ -15,10 +15,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
+
     canvas.addEventListener('mousedown', startDrawing);
     canvas.addEventListener('mouseup', stopDrawing);
     canvas.addEventListener('mouseleave', stopDrawing);
     canvas.addEventListener('mousemove', draw);
+    //JCAavila
+    //05-feb-2024
+    //touch events
+    canvas.addEventListener('touchstart', startDrawing);
+    canvas.addEventListener('touchend', stopDrawing);
+    canvas.addEventListener('touchmove', draw);
+
     clearButton.addEventListener('click', function () {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         lines = [];
@@ -32,9 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     thicknessInput.addEventListener('input', function () {
         ctx.lineWidth = thicknessInput.value;
-        console.log(ctx.lineWidth);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
         redraw();
     });
 
@@ -47,9 +53,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function startDrawing(e) {
+        e.preventDefault();
         drawing = true;
         currentLine = [];
-        currentLine.push(getMousePos(canvas, e));
+        currentLine.push(getPos(canvas, e));
     }
 
     function stopDrawing() {
@@ -61,9 +68,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function draw(e) {
+        e.preventDefault();
         if (!drawing) return;
 
-        var currentPoint = getMousePos(canvas, e);
+        var currentPoint = getPos(canvas, e);
         currentLine.push(currentPoint);
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -81,13 +89,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function redraw() {
-        console.log('start redraw');
         lines.forEach(function (line) {
             if (line.length < 2) return;
 
             ctx.beginPath();
             ctx.moveTo(line[0].x, line[0].y);
-            console.log('Passed If');
 
             for (var i = 1; i < line.length; i++) {
                 ctx.lineTo(line[i].x, line[i].y);
@@ -96,19 +102,34 @@ document.addEventListener('DOMContentLoaded', function () {
             ctx.stroke();
             ctx.closePath();
         });
-
-        console.log('stop redraw');
     }
 
-    function getMousePos(canvas, event) {
-        var rect = canvas.getBoundingClientRect();
-        var scaleX = canvas.width / rect.width;
-        var scaleY = canvas.height / rect.height;
+    function getPos(canvas, event) {
+        //JCAavila
+        //05-feb-2024
+        //check if it is a touch event
+        if (event.touches && event.touches.length > 0) {
+            const touch = event.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            return {
+                x: (touch.clientX - rect.left) * scaleX,
+                y: (touch.clientY - rect.top) * scaleY
+            };
+        } else {
+            //JCAavila
+            //05-feb-2024
+            //mouse event
+            var rect = canvas.getBoundingClientRect();
+            var scaleX = canvas.width / rect.width;
+            var scaleY = canvas.height / rect.height;
 
-        return {
-            x: (event.clientX - rect.left) * scaleX,
-            y: (event.clientY - rect.top) * scaleY
-        };
+            return {
+                x: (event.clientX - rect.left) * scaleX,
+                y: (event.clientY - rect.top) * scaleY
+            };
+        }
     }
 
     function rotateCanvas(canvas, context, angle) {
@@ -118,9 +139,7 @@ document.addEventListener('DOMContentLoaded', function () {
         context.translate(canvas.width / 2, canvas.height / 2);
         context.rotate((rotationAngle * Math.PI) / 180);
         context.translate(-canvas.width / 2, -canvas.height / 2);
-
         redraw();
-
         context.restore();
     }
 });
